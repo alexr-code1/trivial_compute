@@ -34,8 +34,7 @@ board_layout = [
 player_colors = [GREEN, YELLOW, BLUE, RED]
 player_names = ["Player 1", "Player 2", "Player 3", "Player 4"]
 
-
-num_players = 4 
+num_players = 4
 
 # Define category names
 category_names = ["Category 1", "Category 2", "Category 3", "Category 4"]
@@ -55,9 +54,10 @@ question_answered = False
 question_correct = False
 user_answer = ""
 
-# Store the questions and answers
+# Store the questions, answers, and media files
 questions = []
 answers = []
+media_files = []
 
 # Function to add a true/false question
 def add_true_false_question(question, answer):
@@ -70,15 +70,20 @@ def add_multiple_choice_question(question, choices, answer):
     questions.append(formatted_question)
     answers.append(answer)
 
-
+# Function to add a multimedia question
+def add_multimedia_question(question, media_file):
+    questions.append(question)
+    answers.append(None)
+    media_files.append(media_file)
 
 def question_interface():
     print("======= Question Interface =======")
     print("1. Add True/False Question")
     print("2. Add Multiple Choice Question")
-    print("3. Exit")
+    print("3. Add Multimedia Question")
+    print("4. Exit")
 
-    choice = input("Enter your choice (1-3): ")
+    choice = input("Enter your choice (1-4): ")
 
     if choice == "1":
         question = input("Enter the true/false question: ")
@@ -92,6 +97,11 @@ def question_interface():
         add_multiple_choice_question(question, choices, answer)
         print("Question added successfully!")
     elif choice == "3":
+        question = input("Enter the multimedia question: ")
+        media_file = input("Enter the path to the media file: ")
+        add_multimedia_question(question, media_file)
+        print("Question added successfully!")
+    elif choice == "4":
         return
     else:
         print("Invalid choice. Please try again.")
