@@ -128,7 +128,12 @@ while running:
                             user_answer = recognizer.recognize_google(audio)
                             print("You said:", user_answer)
                             # Process the answer (check if it's correct, update game state, etc.)
-                            # (code not included here for brevity)
+                            if user_answer.lower() == answers[current_question].lower():
+                                question_correct = True
+                                current_player_score += 1
+                            else:
+                                # Move to the next player's turn
+                                current_player = (current_player + 1) % num_players
                     except sr.UnknownValueError:
                         print("Sorry, I could not understand your answer.")
                     except sr.RequestError:
@@ -136,16 +141,25 @@ while running:
                 elif question_displayed and question_answered:
                     question_correct = True if input("Was the answer correct? (y/n): ").lower() == 'y' else False
                     if question_correct:
-                        question_answered = False
+                        current_player_score += 1
                     else:
                         # Move to the next player's turn
-                        # (code not included here for brevity)
-                        pass
+                        current_player = (current_player + 1) % num_players
                 elif not question_displayed and not question_answered:
                     question_displayed = True
                     # Display the question and options
-                    # (code not included here for brevity)
-                    pass
+                    question_text = font.render("Question: " + questions[current_question], True, BLACK)
+                    screen.blit(question_text, (question_window_x + 10, question_window_y + 10))
+
+                    # Display the options
+                    options_text = []
+                    for i, option in enumerate(options[current_question]):
+                        text = f"{i+1}. {option}"
+                        options_text.append(text)
+
+                    for i, text in enumerate(options_text):
+                        option_text = font.render(text, True, BLACK)
+                        screen.blit(option_text, (question_window_x + 10, question_window_y + 50 + i * 30))
 
     # Draw the board
     for row in range(9):
@@ -163,16 +177,19 @@ while running:
     if question_displayed:
         pygame.draw.rect(screen, WHITE, (question_window_x, question_window_y, question_window_width, question_window_height))
         # Display the question and options
-        # (code not included here for brevity)
-        pass
+        question_text = font.render("Question: " + questions[current_question], True, BLACK)
+        screen.blit(question_text, (question_window_x + 10, question_window_y + 10))
 
-    # Draw answer status
-    if question_answered:
-        if question_correct:
-            pygame.draw.circle(screen, GREEN, (width - 50, height - 50), 20)
-        else:
-            pygame.draw.circle(screen, RED, (width - 50, height - 50), 20)
+        options_text = []
+        for i, option in enumerate(options[current_question]):
+            text = f"{i+1}. {option}"
+            options_text.append(text)
+
+        for i, text in enumerate(options_text):
+            option_text = font.render(text, True, BLACK)
+            screen.blit(option_text, (question_window_x + 10, question_window_y + 50 + i * 30))
 
     pygame.display.flip()
 
+# Quit the game
 pygame.quit()
